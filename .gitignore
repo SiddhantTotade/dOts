@@ -9,3 +9,4 @@ backend/dots_main/__pycache__
 backend/core/__pycache__
 
 backend/.env
+backend/db.sqlite3
