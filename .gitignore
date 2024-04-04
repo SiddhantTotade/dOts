@@ -7,3 +7,5 @@ backend/auth/__pycache__
 backend/dots_main/__pycache__
 
 backend/core/__pycache__
+
+backend/.env
