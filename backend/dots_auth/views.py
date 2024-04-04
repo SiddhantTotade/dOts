@@ -1,20 +1,20 @@
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 
-from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
 from django.utils.encoding import force_str
+from django.contrib.auth.tokens import default_token_generator
 
 from urllib.parse import urlencode
 
-from .serializers import *
-from .renderers import UserRenderer
 from .helpers import *
+from .serializers import *
 from .utils import Util
+from .renderers import UserRenderer
 
 
 # Generate access and refresh tokens for users
@@ -31,41 +31,44 @@ class UserRegistrationView(APIView):
     renderer_classes = [UserRenderer]
 
     def post(self, request, format=None):
-        serializer = UserRegistrationSerializer(data=request.data)
+        try:
+            serializer = UserRegistrationSerializer(data=request.data)
 
-        serializer.is_valid(raise_exception=True)
+            serializer.is_valid(raise_exception=True)
 
-        user = serializer.save()
-        response = Response()
+            user = serializer.save()
+            response = Response()
 
-        uidb64 = urlsafe_base64_encode(force_bytes(user.id))
-        token = default_token_generator.make_token(user)
+            uidb64 = urlsafe_base64_encode(force_bytes(user.id))
+            token = default_token_generator.make_token(user)
 
-        params = urlencode({'uidb64': uidb64, 'token': token})
+            params = urlencode({'uidb64': uidb64, 'token': token})
 
-        absolute_url = f"{
-            request.scheme}://127.0.0.1:8000/auth/verify/?{params}"
+            absolute_url = f"{
+                request.scheme}://127.0.0.1:8000/auth/verify/?{params}"
 
-        data = {
-            'email_subject': 'Verify your account',
-            'email_body': f"Click on the url to verify email.\n{absolute_url}",
-            'to_email': user.email
-        }
+            data = {
+                'email_subject': 'Verify your account',
+                'email_body': f"Click on the url to verify email.\n{absolute_url}",
+                'to_email': user.email
+            }
 
-        Util.send_mail(data)
+            Util.send_mail(data)
 
-        token = get_tokens_for_user(user)
+            token = get_tokens_for_user(user)
 
-        access_token = response.data.get("access")
-        refresh_token = response.data.get("refresh")
+            access_token = response.data.get("access")
+            refresh_token = response.data.get("refresh")
 
-        response.set_cookie("access", access_token, max_age=settings.AUTH_COOKIE_MAX_AGE, path=settings.AUTH_COOKIE_PATH,
-                            secure=settings.AUTH_COOKIE_SECURE, httponly=settings.AUTH_COOKIE_HTTP_ONLY, samesite=settings.AUTH_COOKIE_SAMESITE)
+            response.set_cookie("access", access_token, max_age=settings.AUTH_COOKIE_MAX_AGE, path=settings.    AUTH_COOKIE_PATH,
+                                secure=settings.AUTH_COOKIE_SECURE, httponly=settings.AUTH_COOKIE_HTTP_ONLY,    samesite=settings.AUTH_COOKIE_SAMESITE)
 
-        response.set_cookie("refresh", refresh_token, max_age=settings.AUTH_COOKIE_MAX_AGE, path=settings.AUTH_COOKIE_PATH,
-                            secure=settings.AUTH_COOKIE_SECURE, httponly=settings.AUTH_COOKIE_HTTP_ONLY, samesite=settings.AUTH_COOKIE_SAMESITE)
+            response.set_cookie("refresh", refresh_token, max_age=settings.AUTH_COOKIE_MAX_AGE, path=settings.  AUTH_COOKIE_PATH,
+                                secure=settings.AUTH_COOKIE_SECURE, httponly=settings.AUTH_COOKIE_HTTP_ONLY,    samesite=settings.AUTH_COOKIE_SAMESITE)
 
-        return response
+            return response
+        except Exception as e:
+            print(e)
 
 
 # User login view

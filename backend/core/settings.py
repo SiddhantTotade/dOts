@@ -38,8 +38,9 @@ ALLOWED_HOSTS = [env("ALLOWED_HOSTS")]
 # Authentication User Model
 AUTH_USER_MODEL = 'dots_auth.User'
 
-# Cors settings
-CORS_ALLOWED_ORIGINS = [env("CORS_ALLOWED_ORIGINS")]
+# CORS settings
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
+CORS_ALLOW_CREDENTIALS = bool(env("CORS_ALLOW_CREDENTIALS"))
 
 # Application definition
 
@@ -105,6 +106,9 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -130,7 +134,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'Asia/Kolkata'
+
+USE_L10N = True
 
 USE_I18N = True
 
@@ -141,6 +147,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -159,7 +168,7 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    "DEFAULT_AUTHENTICATION_CLASSES": (
         'dots_auth.authentication.CustomJWTAuthentication',
     ),
     "DEFAULT_PERMISSION_CLASSES": [
