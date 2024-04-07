@@ -22,6 +22,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("auth/api/", include("dots_auth.urls")),
-    path("app/api/", include("dots_main.urls")),
+    path("accounts/api/", include("dots_accounts.urls")),
+    path("posts/api/", include("dots_posts.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

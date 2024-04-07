@@ -1,10 +1,10 @@
 venv
 
-backend/auth/migrations
-backend/dots_main/migrations
+backend/dots_accounts/migrations
+backend/dots_posts/migrations
 
-backend/auth/__pycache__
-backend/dots_main/__pycache__
+backend/dots_accounts/__pycache__
+backend/dots_posts/__pycache__
 
 backend/core/__pycache__
 

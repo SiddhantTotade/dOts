@@ -36,7 +36,7 @@ DEBUG = env("DEBUG")
 ALLOWED_HOSTS = [env("ALLOWED_HOSTS")]
 
 # Authentication User Model
-AUTH_USER_MODEL = 'dots_auth.User'
+AUTH_USER_MODEL = 'dots_accounts.User'
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
@@ -53,8 +53,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     # Installed applications
-    "dots_auth",
-    "dots_main",
+    "dots_accounts",
+    "dots_posts",
 
     # Third party applications
     "rest_framework",
@@ -169,7 +169,7 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        'dots_auth.authentication.CustomJWTAuthentication',
+        'dots_accounts.authentication.CustomJWTAuthentication',
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated"
